@@ -2,8 +2,8 @@ const sql = require('mssql');
 
 const dbConfig = {
     user: 'vealo_admin',
-    password: 'TuPasswordSeguro',
-    server: 'IP_DE_TU_VPS', // La IP de tu Windows Server
+    password: 'ljmm19326228',
+    server: '51.81.29.31', // La IP de tu Windows Server
     database: 'VealoDB',
     options: {
         encrypt: true, // Importante para conexiones remotas
