@@ -59,3 +59,32 @@ app.post('/api/registro', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor Vealo-Mu activo en puerto ${PORT}`));
+
+// RUTA PARA OBTENER DATOS DEL PANEL
+app.get('/api/usuario/:id', async (req, res) => {
+    try {
+        let pool = await sql.connect(dbConfig);
+        let result = await pool.request()
+            .input('id', sql.VarChar, req.params.id)
+            .query(`
+                SELECT 
+                    I.memb_name, 
+                    I.mail_addr, 
+                    I.trafico_acumulado, 
+                    S.ConnectStat, -- 0 = Offline, 1 = Online
+                    S.IP,
+                    S.ConnectTM
+                FROM MEMB_INFO I
+                LEFT JOIN MEMB_STAT S ON I.memb___id = S.memb___id
+                WHERE I.memb___id = @id
+            `);
+
+        if (result.recordset.length > 0) {
+            res.json(result.recordset[0]);
+        } else {
+            res.status(404).send("Usuario no encontrado");
+        }
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
